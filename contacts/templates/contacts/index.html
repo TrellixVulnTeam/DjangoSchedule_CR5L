@@ -34,7 +34,7 @@
       {% if contacts.number == pagina %}
     <li class="page-item"><a class="page-link active" href="?p={{ pagina }}">{{pagina}}</a></li>
     {% else %}
-        <li class="page-item"><a class="page-link" href="?p={{ pagina }}">{{pagina}}</a></li>
+        <li class="page-item"><a class="page-link" href="?p={{ pagina }}&termo={{ request.GET.termo }}">{{pagina}}</a></li>
       {% endif %}
     {% endfor %}
     <li class="page-item"><a class="page-link" href="#">Next</a></li>

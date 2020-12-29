@@ -2,6 +2,11 @@
 
 {% block content %}
 <h1 class="mt-5">{{ contact.nome }} {{ contact.sobrenome }}</h1>
+  {% if contact.images %}
+  <p>
+    <img src="{{ contact.images.url }}" alt="" style="max-width:250px">
+  </p>
+  {% endif %}
         <dl>
           <dt>Id</dt>
           <dd>{{ contact.id }}</dd>

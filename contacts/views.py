@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.http import Http404
 from .models import Contact
 '''Libraries for complexes queries.'''
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
+# MESSAGES LIBRARIES
+from django.contrib import messages
 
 # Create your views here.
 
@@ -32,8 +34,15 @@ def view_contact(request, contact_id):
 
 def search(request):
     termo = request.GET.get('termo')
-    if termo is None:
-        raise Http404()
+    if termo is None or not termo:
+        ''' Show messages for cases in what the search bar stay empty or others errors.
+        '''
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Field search cannot stay empty.'
+        )
+        return redirect('index')
     campos = Concat('nome', Value('') ,'sobrenome')
     contacts = Contact.objects.annotate(
         nome_completo=campos

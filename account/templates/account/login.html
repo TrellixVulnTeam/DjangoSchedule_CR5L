@@ -1,6 +1,31 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-    <h1>Login</h1>
+<head>
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <title>{% block title %} Login {% endblock %}</title>
+</head>
+<div class="container">
+    <h1 class="mb-3 mt-3">Login</h1>
+    {% if not user.is_authenticated %}
+    <form method="POST" action="{% url 'login' %}">
     {% include 'partials/_messages.html' %}
+    {% csrf_token %}
+  <div class="form-group">
+    <label >User</label>
+    <input type="text" class="form-control width_fields" name="user" value="{{ request.POST.user }}" placeholder="Enter user">
+  </div>
+  <div class="form-group">
+    <label Password </label>
+    <input type="password" class="form-control width_fields"  name="pwd"  placeholder="Password">
+  </div>
+  <button type="submit" class="btn btn-primary mb-5">Login</button>
+    </form>
+    {% else %}
+    <p>
+        Your already is logged how {{ user }}.
+        <p><a href="{% url 'logout' %}">Click here</a> for logout.</p>
+    </p>
+    {% endif %}
+</div>
 {% endblock %}

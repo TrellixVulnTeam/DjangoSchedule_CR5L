@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% block title %} {{ contact.nome }} {{ contact.sobrenome }}{% endblock %}
 {% block content %}
 <h1 class="mt-5">{{ contact.nome }} {{ contact.sobrenome }}</h1>
   {% if contact.images %}

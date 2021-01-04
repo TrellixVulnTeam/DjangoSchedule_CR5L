@@ -1,17 +1,33 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from .models import FormContact
 
 # Create your views here.
 
 
 def login(request):
-    return render(request, 'account/login.html')
+    if request.method != 'POST':
+        return render(request, 'account/login.html')
+    user = request.POST.get('user')
+    pwd = request.POST.get('pwd')
+
+    # Authenticating
+    login_user = auth.authenticate(request, username=user, password=pwd)
+    if not login_user:
+        messages.error(request, 'Your login or password is incorrect.')
+        return render(request, 'account/login.html')
+    else:
+        auth.login(request, login_user)
+        messages.success(request, 'You was log in with successful  :)')
+        return redirect('dashboard')
 
 
 def logout(request):
-    return render(request, 'account/logout.html')
+    auth.logout(request)
+    return redirect(login)
 
 
 def register(request):
@@ -68,8 +84,21 @@ def register(request):
     return redirect('login')
 
 
+@login_required(redirect_field_name='login')
 def dashboard(request):
-    return render(request, 'account/dashboard.html')
+    if request.method != 'POST':
+        form = FormContact()
+        return render(request, 'account/dashboard.html', { 'form' : form})
+
+    form = FormContact(request.POST, request.FILES)
+    if not form.is_valid():
+        messages.error(request, 'Error in send form.')
+        form = FormContact(request.POST)
+        return render(request, 'account/dashboard.html', {'form': form})
+
+    form.save()
+    messages.success(request, f'Contact {request.POST.get("nome")} saved with success.')
+    return redirect('dashboard')
 
 
 
